@@ -1,0 +1,28 @@
+.content {
+    flex-grow: 1;
+    margin: 0;
+    width: 350px;  
+    height: 400px;
+    display: flex;
+    flex-direction: column;
+}
+
+.info {
+    overflow-y: scroll;
+    overflow-x: hidden;
+    font-size: 30;
+    flex-grow: 1;
+}
+
+.title {
+    margin: 0;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    width: 350px;  
+    height: 400px;
+    margin: 0;
+}
+
