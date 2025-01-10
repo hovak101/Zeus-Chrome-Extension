@@ -1,15 +1,28 @@
 chrome.tabs.query({active: true, currentWindow: true}, (tabs) => {
     chrome.runtime.sendMessage({type: "requestData", tab_id: tabs[0].id}, (response) => {
-        document.getElementById('itemName').textContent = response;
+        document.getElementById('itemName').textContent = response.title;
+        if (response.status_code === 2) {
+            document.getElementById('itemInfo').textContent = "loading";
+        }
+        else if (response.status_code === 1) {
+            document.getElementById('itemInfo').textContent = "DATA READY!";
+        }
     });
 });
 
-chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
-    if (changeInfo.status === 'complete') {
-        chrome.tabs.query({active: true, currentWindow: true}, (tabs) => {
-            chrome.runtime.sendMessage({type: "requestData", tab_id: tabs[0].id}, (response) => {
-                document.getElementById('itemName').textContent = response;
-            });
+chrome.storage.onChanged.addListener((tabId, changeInfo, tab) => {
+    chrome.tabs.query({active: true, currentWindow: true}, (tabs) => {
+        chrome.runtime.sendMessage({type: "requestData", tab_id: tabs[0].id}, (response) => {
+            document.getElementById('itemName').textContent = response.title;
+            if (response.status_code === 2) {
+                document.getElementById('itemInfo').textContent = "loading";
+            }
+            else if (response.status_code === 1) {
+                document.getElementById('itemInfo').textContent = "DATA READY!";
+            }
+            else {
+                document.getElementById('itemInfo').textContent = "";
+            }
         });
-    }
+    });
 });

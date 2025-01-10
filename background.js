@@ -7,6 +7,7 @@
 
 // if content script can't be injected, and it exists in our database, remove tab id. 
 chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
+    // add tab id to chrome.storage with "loading" preset
     if (changeInfo.status === 'complete') {
         let tabIDKey = "tab_" + tabId;
         chrome.scripting.executeScript(
@@ -17,6 +18,7 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
             () => {
                 if (chrome.runtime.lastError) {
                     console.log(chrome.runtime.lastError);
+                    // TODO: instead of removing it, add the tab id to the chrome.storage
                     chrome.storage.local.get(tabIDKey, (result) => {
                         if (result[tabIDKey]) {
                             chrome.storage.local.remove(tabIDKey);
@@ -27,7 +29,7 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
         );
     }
 });
-
+ 
 // if tab is closed, remove from table
 chrome.tabs.onRemoved.addListener((tabId) => {
     let tabIDKey = "tab_" + tabId;
@@ -36,19 +38,31 @@ chrome.tabs.onRemoved.addListener((tabId) => {
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     if (message.type === 'tabInfo') {
-        // Store the data by tab ID
         let tabIDKey = "tab_" + sender.tab.id;
-        chrome.storage.local.set({[tabIDKey]: {title: message.title, status_code: 1}});
+        chrome.storage.local.set({[tabIDKey]: {title: message.title, status_code: 2}});
+
+        // replace with necessary backend code. 
+        console.log("simualting expensive operation");
+        setTimeout(() => {
+            console.log("finished simulation");
+            chrome.storage.local.set({[tabIDKey]: {title: message.title, status_code: 1}});
+        }, 3000);
+
     }
     else if (message.type === 'productNotDetected') {
         let tabIDKey = "tab_" + sender.tab.id;
         chrome.storage.local.set({[tabIDKey]: {title: 'N/A', status_code: 4}})
     }
     else if (message.type === 'requestData') {
-        // Get the data by tab ID
         let tabIDKey = "tab_" + message.tab_id;
         chrome.storage.local.get([tabIDKey], (result) => {
-            sendResponse(result[tabIDKey].title);
+            if (result[tabIDKey]) {
+                sendResponse(result[tabIDKey]);
+            }
+            else {
+                // default behavior
+                sendResponse({title: 'N/A', status_code: 4});
+            }
         });
 
         return true;
