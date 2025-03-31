@@ -39,19 +39,29 @@ chrome.tabs.onRemoved.addListener((tabId) => {
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     if (message.type === 'tabInfo') {
         let tabIDKey = "tab_" + sender.tab.id;
-        chrome.storage.local.set({[tabIDKey]: {title: message.title, status_code: 2}});
+        chrome.storage.local.set({[tabIDKey]: {title: message.title, data: null, status_code: 2}});
 
-        // replace with necessary backend code. 
-        console.log("simualting expensive operation");
-        setTimeout(() => {
-            console.log("finished simulation");
-            chrome.storage.local.set({[tabIDKey]: {title: message.title, status_code: 1}});
-        }, 3000);
+        fetch("https://processproduct-udl2fj7poq-uc.a.run.app", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ name: message.title })
+          })
+            .then(res => res.json())
+            .then(data => {
+                chrome.storage.local.set({[tabIDKey]: {title: message.title, data: data.data, status_code: 1}});
+            });
+
+        // simulation: 
+        // console.log("simualting expensive operation");
+        // setTimeout(() => {
+        //     console.log("finished simulation");
+        //     chrome.storage.local.set({[tabIDKey]: {title: message.title, status_code: 1}});
+        // }, 3000);
 
     }
     else if (message.type === 'productNotDetected') {
         let tabIDKey = "tab_" + sender.tab.id;
-        chrome.storage.local.set({[tabIDKey]: {title: 'N/A', status_code: 4}})
+        chrome.storage.local.set({[tabIDKey]: {title: 'N/A', data: null, status_code: 4}})
     }
     else if (message.type === 'requestData') {
         let tabIDKey = "tab_" + message.tab_id;

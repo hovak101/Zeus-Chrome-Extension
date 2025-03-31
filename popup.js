@@ -5,7 +5,7 @@ chrome.tabs.query({active: true, currentWindow: true}, (tabs) => {
             document.getElementById('itemInfo').textContent = "loading";
         }
         else if (response.status_code === 1) {
-            document.getElementById('itemInfo').textContent = "DATA READY!";
+            document.getElementById('itemInfo').textContent = response.data;
         }
     });
 });
@@ -18,7 +18,7 @@ chrome.storage.onChanged.addListener((tabId, changeInfo, tab) => {
                 document.getElementById('itemInfo').textContent = "loading";
             }
             else if (response.status_code === 1) {
-                document.getElementById('itemInfo').textContent = "DATA READY!";
+                document.getElementById('itemInfo').textContent = response.data;
             }
             else {
                 document.getElementById('itemInfo').textContent = "";
