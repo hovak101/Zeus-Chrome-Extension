@@ -18,7 +18,6 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
             () => {
                 if (chrome.runtime.lastError) {
                     console.log(chrome.runtime.lastError);
-                    // TODO: instead of removing it, add the tab id to the chrome.storage
                     chrome.storage.local.get(tabIDKey, (result) => {
                         if (result[tabIDKey]) {
                             chrome.storage.local.remove(tabIDKey);
@@ -47,16 +46,10 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
             body: JSON.stringify({ name: message.title })
           })
             .then(res => res.json())
-            .then(data => {
-                chrome.storage.local.set({[tabIDKey]: {title: message.title, data: data.data, status_code: 1}});
+            .then(productInfo => {
+                chrome.storage.local.set({[tabIDKey]: {title: message.title, data: productInfo.data, status_code: 1}});
+                console.log(productInfo.topFive);
             });
-
-        // simulation: 
-        // console.log("simualting expensive operation");
-        // setTimeout(() => {
-        //     console.log("finished simulation");
-        //     chrome.storage.local.set({[tabIDKey]: {title: message.title, status_code: 1}});
-        // }, 3000);
 
     }
     else if (message.type === 'productNotDetected') {
