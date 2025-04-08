@@ -1,7 +1,7 @@
 
 
 if (isAmazonProduct(document.URL)) {
-    chrome.runtime.sendMessage({type: "tabInfo", title: getAmazonProductTitle()});
+    chrome.runtime.sendMessage({type: "tabInfo", title: getAmazonProductTitle(), seller: "Amazon"});
 }
 else {
     chrome.runtime.sendMessage({type: "productNotDetected"})

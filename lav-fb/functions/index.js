@@ -1,28 +1,43 @@
 /* eslint-disable */
 const {onRequest} = require("firebase-functions/v2/https");
-const {initializeApp} = require("firebase-admin/app");
-const requestPromise = require("request-promise");
+const {getWalmartInfo, getAmazonInfo, getEbayInfo, getTargetInfo} = require("./scraper.js");
 
-initializeApp();
+async function addProducts(name, exclude) {
+  const promises = [];
+  console.log(exclude);
+  if (exclude !== "Walmart") {
+    promises.push(getWalmartInfo(name));
+  }
+  if (exclude !== "Amazon") {
+    promises.push(getAmazonInfo(name));
+  }
+  if (exclude !== "Ebay") {
+    promises.push(getEbayInfo(name));
+  }
+  if (exclude !== "Target") {
+    promises.push(getTargetInfo(name));
+  }
 
-// must make secret
-const CUSTOMER_ID = "hl_09aec81a";
-const ZONE_NAME = "serp_api1";
-const ZONE_PASS = "gnlmyc4lz0k0";
+  const results = await Promise.allSettled(promises);
+
+  const products = [];
+  results.forEach((result) => {
+    if (result.status === "fulfilled" && result.value) {
+      products.push(result.value);
+    }
+  });
+
+  return products;
+}
 
 exports.processProduct = onRequest(async (req, res) => {
   try {
     const name = req.body.name;
+    const exclude = req.body.exclude;
 
-    const productData = await requestPromise({
-      url: `https://www.google.com/search?q=ps5&tbm=shop&brd_json=1`,
-      proxy: `http://brd-customer-${CUSTOMER_ID}-zone-${ZONE_NAME}:${ZONE_PASS}@brd.superproxy.io:33335`,
-      strictSSL: false
-    });
-  
+    products = await addProducts(name, exclude);
     res.json({
-      data: "some stupid data",
-      topFive: JSON.parse(productData).shopping.slice(0,5)
+      productInfo: products
     });
   } catch (err) {
     console.error("Failed to load config:", err);
