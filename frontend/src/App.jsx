@@ -30,7 +30,7 @@ function App() {
   return (
     <div className="content">
       <Title message={productInfo.title} className="title"/>
-      <div className="productList">
+      <div className="productList mx-2">
         <div className="columnNames tableRow">
           <div className="col-a">Seller</div>
           <div className="col-b">Total Cost</div>
