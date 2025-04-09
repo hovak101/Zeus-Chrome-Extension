@@ -7,9 +7,30 @@
 
 // if content script can't be injected, and it exists in our database, remove tab id. 
 chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
+    let tabIDKey = "tab_" + tabId;
+
+    if (changeInfo.status === 'loading') {
+        if (tabId) {
+            chrome.storage.local.get(tabIDKey, (result) => {
+                let record = result[tabIDKey];
+    
+                // if no record exists, create a new one
+                if (!record) {
+                    record = {
+                        title: 'N/A',
+                        products: [],
+                        status_code: 2
+                    };
+                } else {
+                    record.status_code = 2;
+                }
+    
+                chrome.storage.local.set({ [tabIDKey]: record });
+            });
+        }
+    }
     // add tab id to chrome.storage with "loading" preset
     if (changeInfo.status === 'complete') {
-        let tabIDKey = "tab_" + tabId;
         chrome.scripting.executeScript(
             {
                 target: { tabId: tabId },

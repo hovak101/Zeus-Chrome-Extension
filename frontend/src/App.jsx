@@ -1,6 +1,9 @@
 import { useState, useEffect } from 'react';
-import Title from './components/Title.jsx';
-import Product from './components/Product.jsx';
+import ProductsPage from './components/ProductsPage.jsx';
+import LoadingPage from './components/LoadingPage.jsx';
+import NotFoundPage from './components/NotFoundPage.jsx';
+import NotDetectedPage from './components/NotDetectedPage.jsx';
+import PopupLayout from './components/PopupLayout.jsx';
 
 function App() {
   const [productInfo, setProductInfo] = useState({ title: '', products: [], status_code: 2});
@@ -21,25 +24,31 @@ function App() {
     });
   }, []);
 
-  const productList = productInfo.products?.map((product) => (
-    <Product className="tableRow" url={product.url} seller={product.seller} 
-    price={product.price} shippingCost={product.shippingCost}
-    freeReturns={product.freeReturns}/>
-  ));
+  let inner = null;
+
+  switch (productInfo.status_code) {
+    case 2: 
+      inner = <LoadingPage/>;
+      break;
+    case 3: 
+      inner = <NotFoundPage/>;
+      break;
+    case 4: 
+      inner = <NotDetectedPage/>;
+      break;
+    default: 
+      inner = <ProductsPage 
+                title={productInfo.title} 
+                products={productInfo.products}
+              />;
+      break;
+  }
 
   return (
-    <div className="content">
-      <Title message={productInfo.title} className="title"/>
-      <div className="productList mx-2">
-        <div className="columnNames tableRow">
-          <div className="col-a">Seller</div>
-          <div className="col-b">Total Cost</div>
-          <div className="col-c">Returns?</div>
-        </div>
-        {productList}
-      </div>
-    </div>
-  )
+    <PopupLayout>
+      {inner}
+    </PopupLayout>
+  );
 }
 
 export default App;
