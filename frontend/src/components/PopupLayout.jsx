@@ -20,7 +20,8 @@ function PopupLayout(props) {
                             transition
                             duration-100
                             ease-in-out
-                            place-content-center"/>
+                            place-content-center
+                            dark:text-gray-100"/>
           </div>
         </div>
         <div>
