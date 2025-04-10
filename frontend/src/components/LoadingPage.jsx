@@ -1,5 +1,8 @@
+import Lottie from 'lottie-react';
+import loadingAnim from '../assets/loading.json';
+
 function LoadingPage(props) {
-    return (<div>Loading papi.</div>);
+    return (<Lottie animationData={loadingAnim} loop={true}/>);
 }
 
 export default LoadingPage;

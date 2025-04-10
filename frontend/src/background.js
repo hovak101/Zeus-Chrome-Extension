@@ -68,7 +68,12 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
           })
             .then(res => res.json())
             .then(res => {
-                chrome.storage.local.set({[tabIDKey]: {title: message.title, products: res.productInfo, status_code: 1}});
+                if(res.productInfo.length === 0) {
+                    chrome.storage.local.set({[tabIDKey]: {title: message.title, products: res.productInfo, status_code: 3}});
+                }
+                else {
+                    chrome.storage.local.set({[tabIDKey]: {title: message.title, products: res.productInfo, status_code: 1}});
+                }
             });
     }
     else if (message.type === 'productNotDetected') {

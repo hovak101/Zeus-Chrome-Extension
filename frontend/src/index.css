@@ -1,12 +1,19 @@
 @import "tailwindcss";
 
-.content {
-    flex-grow: 1;
-    margin: 0;
-    width: 350px;  
-    height: 400px;
-    display: flex;
-    flex-direction: column;
+/* Regular (non-italic) Lora */
+@font-face {
+  font-family: 'Lora';
+  src: url('./assets/fonts/Lora/Lora-VariableFont_wght.ttf') format('truetype');
+  font-weight: 100 900;
+  font-style: normal;
+}
+
+/* Italic Lora */
+@font-face {
+  font-family: 'Lora';
+  src: url('./assets/fonts/Lora/Lora-Italic-VariableFont_wght.ttf') format('truetype');
+  font-weight: 100 900;
+  font-style: italic;
 }
 
 .productList {
