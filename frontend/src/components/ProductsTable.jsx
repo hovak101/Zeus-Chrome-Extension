@@ -31,7 +31,7 @@ function ProductsTable(props) {
   return (
     <Table>
       <TableHeader>
-        <TableRow className="hover:bg-transparent dark:hover:bg-transparent !cursor-default">
+        <TableRow className="hover:bg-transparent !cursor-default">
           <TableHead className="w-[100px]">Seller</TableHead>
           <TableHead>Price</TableHead>
           <TableHead className="text-right">Returns</TableHead>

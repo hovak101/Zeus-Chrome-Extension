@@ -30,14 +30,13 @@ export default function SettingsButton() {
                                 transition
                                 duration-100
                                 ease-in-out
-                                place-content-center
-                                dark:text-gray-100"
+                                place-content-center"
         />
 
         <AnimatePresence>
         {open && (
             <motion.div
-            className="fixed top-0 left-0 right-0 bottom-0 bg-white dark:bg-gray-900 shadow-xl p-4 z-50 overflow-auto"
+            className="fixed top-0 left-0 right-0 bottom-0 bg-white shadow-xl p-4 z-50 overflow-auto"
             initial="hidden"
             animate="visible"
             exit="exit"
