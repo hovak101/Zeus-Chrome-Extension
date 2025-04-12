@@ -40,7 +40,7 @@ app.post('/scrape', async (req, res) => {
     const name = req.body.name;
     const exclude = req.body.exclude;
 
-    products = await addProducts(name, exclude);
+    const products = await addProducts(name, exclude);
     res.json({
       productInfo: products
     });
