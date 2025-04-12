@@ -49,11 +49,8 @@ export async function getEbayInfo(name) {
       });
   });
 
-  for (let product of products) {
-    if (!product.sponsored) {
-      await browser.close();
-      return product; 
-    }
+  if(products.length > 0) {
+    return products[0];
   }
 
   return null;

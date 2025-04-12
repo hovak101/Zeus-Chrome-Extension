@@ -5,7 +5,7 @@ import puppeteer from 'puppeteer';
     const browser = await puppeteer.launch();
     const page = await browser.newPage();
   
-    const name="xbox series x";
+    const name="Xbox Series X – 1TB Digital Edition";
     const url = `https://www.ebay.com/sch/i.html?_nkw=${encodeURIComponent(name)}`;
     // Navigate the page to a URL
     await page.goto(url);
