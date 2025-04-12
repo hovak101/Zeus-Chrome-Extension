@@ -8,7 +8,7 @@ app.use(express.json());
 
 async function addProducts(name, exclude) {
   const promises = [];
-  console.log(exclude);
+
   if (exclude !== "Walmart") {
     promises.push(getWalmartInfo(name));
   }
@@ -34,10 +34,10 @@ async function addProducts(name, exclude) {
   return products;
 }
 
+// timeout after 20 seconds
 app.post('/scrape', async (req, res) => {
   try {
     const name = req.body.name;
-    console.log("the freaking name:", name);
     const exclude = req.body.exclude;
 
     const products = await addProducts(name, exclude);
