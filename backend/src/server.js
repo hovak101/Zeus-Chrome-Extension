@@ -1,16 +1,47 @@
-// backend/server.js
-const express = require('express');
+import express from 'express';
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Basic test route
-app.get('/', (req, res) => {
-  res.send('🚀 Backend is running on Railway!');
-});
+async function addProducts(name, exclude) {
+  const promises = [];
+  console.log(exclude);
+  if (exclude !== "Walmart") {
+    promises.push(getWalmartInfo(name));
+  }
+  if (exclude !== "Amazon") {
+    promises.push(getAmazonInfo(name));
+  }
+  if (exclude !== "Ebay") {
+    promises.push(getEbayInfo(name));
+  }
+  if (exclude !== "Target") {
+    promises.push(getTargetInfo(name));
+  }
 
-// Example scraping route (placeholder for now)
+  const results = await Promise.allSettled(promises);
+
+  const products = [];
+  results.forEach((result) => {
+    if (result.status === "fulfilled" && result.value) {
+      products.push(result.value);
+    }
+  });
+
+  return products;
+}
+
 app.get('/scrape', async (req, res) => {
-  res.json({ message: 'Scraping logic goes here' });
+  try {
+    const name = req.body.name;
+    const exclude = req.body.exclude;
+
+    products = await addProducts(name, exclude);
+    res.json({
+      productInfo: products
+    });
+  } catch (err) {
+    console.error("Failed to load config:", err);
+  }
 });
 
 app.listen(PORT, () => {
