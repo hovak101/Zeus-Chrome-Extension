@@ -61,7 +61,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         let tabIDKey = "tab_" + sender.tab.id;
         chrome.storage.local.set({[tabIDKey]: {title: message.title, products: [], status_code: 2}});
 
-        fetch("https://processproduct-udl2fj7poq-uc.a.run.app", {
+        fetch("https://lav-production-9f70.up.railway.app/scrape", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ name: message.title, exclude: message.seller })
