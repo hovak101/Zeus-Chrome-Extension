@@ -2,7 +2,7 @@ import { Settings } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useState } from 'react';
 import SettingsPage from './SettingsPage.jsx';
-export default function SettingsButton() {
+export default function SettingsButton(props) {
   const [open, setOpen] = useState(false);
 
   const bounceUp = {
@@ -43,7 +43,7 @@ export default function SettingsButton() {
             exit="exit"
             variants={bounceUp}
             >
-            <SettingsPage onClose={() => setOpen(false)}/>
+            <SettingsPage isDark={props.isDark} setIsDark={props.setIsDark} onClose={() => setOpen(false)}/>
             </motion.div>
         )}
         </AnimatePresence>

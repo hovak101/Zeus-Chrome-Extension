@@ -7,6 +7,8 @@ import PopupLayout from './components/PopupLayout.jsx';
 
 function App() {
   const [productInfo, setProductInfo] = useState({ title: '', products: [], status_code: 2});
+  const [isDark, setIsDark] = useState(null);
+  
 
   async function fetchProductInfo() {
     chrome.tabs.query({active: true, currentWindow: true}, (tabs) => {
@@ -21,6 +23,28 @@ function App() {
 
     chrome.storage.onChanged.addListener(() => {
       fetchProductInfo();
+    });
+  }, []);
+
+  useEffect(() => {
+    if (isDark === null) return;
+  
+    if (isDark) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+  
+    chrome.storage.local.set({ isDark });
+  }, [isDark]);
+
+  useEffect(() => {
+    chrome.storage.local.get('isDark', (result) => {
+      if (typeof result.isDark === 'boolean') {
+        setIsDark(result.isDark);
+      } else {
+        setIsDark(true); // fallback if nothing is stored
+      }
     });
   }, []);
 
@@ -45,7 +69,7 @@ function App() {
   }
 
   return (
-    <PopupLayout>
+    <PopupLayout isDark={isDark} setIsDark={setIsDark}>
       {inner}
     </PopupLayout>
   );

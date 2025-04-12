@@ -11,7 +11,7 @@ function PopupLayout(props) {
             <div className="place-content-center font-bold text-xl">Zeus</div>
           </div>  
           <div className="flex flex-row gap-x-2.5 items-center content-center place-content-center">
-            <SettingsButton/>
+            <SettingsButton isDark={props.isDark} setIsDark={props.setIsDark}/>
             <Flag className="w-7 h-7 
                             cursor-pointer
                             text-black
