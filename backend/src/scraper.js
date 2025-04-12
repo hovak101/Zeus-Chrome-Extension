@@ -1,45 +1,58 @@
 import axios from 'axios';
 import * as cheerio from 'cheerio';
 import fetch from 'node-fetch';
+import puppeteer from 'puppeteer';
 
 export async function getEbayInfo(name) {
+  // Launch the browser and open a new blank page
+  const browser = await puppeteer.launch();
+  const page = await browser.newPage();
   const url = `https://www.ebay.com/sch/i.html?_nkw=${encodeURIComponent(name)}`;
+  // Navigate the page to a URL
+  await page.goto(url);
+  
+  await page.waitForSelector('ul.srp-results.srp-list.clearfix', { timeout: 10000 });
 
-  const response = await axios.get(url, {
-    headers: {
-      "User-Agent":
-        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36",
-      "Accept":
-        "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8",
-      "Accept-Language": "en-US,en;q=0.9",
-      "Cache-Control": "no-cache",
-      "Pragma": "no-cache",
-      "Referer": "https://www.google.com/",
-      "Connection": "keep-alive"
-    },
-    timeout: 10000,
+  const products = await page.$$eval('ul.srp-results.srp-list.clearfix > li.s-item', items => {
+      return items.map(item => {
+        const url = item.querySelector('.s-item__link')?.href || null;
+        const priceRaw = item.querySelector('.s-item__price')?.textContent.trim() || null;
+        const shippingRaw = item.querySelector('.s-item__shipping, .s-item__logisticsCost')?.textContent.trim() || '';
+        const condition = item.querySelector('.SECONDARY_INFO')?.textContent.trim() || null;
+        const freeReturns = !!item.querySelector('.s-item__free-returns');
+    
+        // Clean up price (e.g., "$398.99" -> 398.99)
+        const priceMatch = priceRaw?.match(/[\d,.]+/);
+        const price = priceMatch ? parseFloat(priceMatch[0].replace(/,/g, '')).toFixed(2) : null;
+    
+        // Clean up shipping (e.g., "+$55.05 delivery" or "Free delivery" -> 0.00)
+        let shipping = 0.00;
+        if (/free/i.test(shippingRaw)) {
+          shipping = 0.00;
+        } else {
+          const shippingMatch = shippingRaw.match(/[\d,.]+/);
+          shipping = shippingMatch ? parseFloat(shippingMatch[0].replace(/,/g, '')).toFixed(2) : '0.00';
+        }
+    
+          // Check if the item is marked as sponsored
+          const sponsoredText = item.textContent.toLowerCase();
+          const sponsored = sponsoredText.includes('sponsored');
+        return {
+          seller: "Ebay",
+          url,
+          price: price ? parseFloat(price) : null,
+          shippingCost: parseFloat(shipping),
+          condition,
+          freeReturns,
+          sponsored
+        };
+      });
   });
 
-  const html = response.data;
-  const $ = cheerio.load(html);
-
-  const items = $('li.s-item');
-
-  for (let i = 0; i < items.length; i++) {
-    const item = $(items[i]);
-
-    const url = item.find('a.s-item__link').attr('href');
-    const price = item.find('.s-item__price').first().text();
-    const isSponsored = item.text().includes('Sponsored');
-
-    if (!isSponsored && url && price) {
-      return {
-        seller: "Ebay",
-        url: url,
-        price: parseFloat(price.slice(1, price.length)),
-        shippingCost: 0,
-        freeReturns: true,
-      }
+  for (let product of products) {
+    if (!product.sponsored) {
+      await browser.close();
+      return product; 
     }
   }
 

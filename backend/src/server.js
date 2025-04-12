@@ -36,8 +36,6 @@ async function addProducts(name, exclude) {
 
 app.post('/scrape', async (req, res) => {
   try {
-    console.log("BODY?", req.body);
-    console.log("fml");
     const name = req.body.name;
     const exclude = req.body.exclude;
 
