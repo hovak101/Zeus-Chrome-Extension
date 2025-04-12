@@ -1,4 +1,6 @@
 import express from 'express';
+import { getWalmartInfo, getAmazonInfo, getEbayInfo, getTargetInfo } from './scraper.js';
+
 const app = express();
 const PORT = process.env.PORT || 3000;
 
