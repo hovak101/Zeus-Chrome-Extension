@@ -37,6 +37,7 @@ async function addProducts(name, exclude) {
 app.post('/scrape', async (req, res) => {
   try {
     const name = req.body.name;
+    console.log("the freaking name:", name);
     const exclude = req.body.exclude;
 
     const products = await addProducts(name, exclude);
