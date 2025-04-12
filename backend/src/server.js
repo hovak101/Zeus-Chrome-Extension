@@ -32,7 +32,7 @@ async function addProducts(name, exclude) {
   return products;
 }
 
-app.get('/scrape', async (req, res) => {
+app.post('/scrape', async (req, res) => {
   try {
     const name = req.body.name;
     const exclude = req.body.exclude;

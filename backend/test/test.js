@@ -12,6 +12,7 @@ const url = "https://lav-production-9f70.up.railway.app/scrape";
       body: JSON.stringify({ name: "ps5", exclude: "Target" })
     });
 
+    console.log("Status:", res.status);
     const data = await res.json();
     console.log("Function response:", data.productInfo);
   } catch (err) {
