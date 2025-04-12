@@ -4,6 +4,8 @@ import { getWalmartInfo, getAmazonInfo, getEbayInfo, getTargetInfo } from './scr
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+app.use(express.json());
+
 async function addProducts(name, exclude) {
   const promises = [];
   console.log(exclude);
