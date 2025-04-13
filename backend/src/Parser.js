@@ -22,7 +22,7 @@ class Parser {
     getBestEbayProduct(products) {
       let product; 
       
-      for(let i = 3; i >= 0; i--) {
+      for(let i = 3; i > 0; i--) {
         if (products.length >= i) {
           product = products[i];
           product.seller = "Ebay";

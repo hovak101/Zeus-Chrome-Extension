@@ -5,7 +5,7 @@ async function runFetch() {
     const res = await fetch("http://localhost:3000/scrape", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name: "xbox series x" , exclude: "Target" })
+      body: JSON.stringify({ name: "sdfsdkfasl;dfjsa;djkfskldjfsadl;fsdal;j" , exclude: "Target" })
     });
 
     const data = await res.json();
