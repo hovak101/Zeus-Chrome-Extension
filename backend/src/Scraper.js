@@ -2,7 +2,25 @@ import puppeteer from 'puppeteer';
 
 class Scraper {
     async init() {
-        this.browser = await puppeteer.launch();
+        // Check if running in production (like Railway)
+        const isProduction = process.env.NODE_ENV === 'production' || process.env.RAILWAY_ENVIRONMENT;
+        
+        // Base options that work well locally
+        const options = {
+            headless: "new"
+        };
+        
+        // Add extra args only in production environment
+        if (isProduction) {
+            options.args = [
+                '--no-sandbox',
+                '--disable-setuid-sandbox',
+                '--disable-dev-shm-usage',
+                '--no-zygote'
+            ];
+        }
+        
+        this.browser = await puppeteer.launch(options);
     }
     
     async getWalmartProducts(query) {
