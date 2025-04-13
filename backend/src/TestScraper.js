@@ -1,5 +1,8 @@
+import { sleep } from './utils/Sleeper.js';
+
 class TestScraper {
-    getWalmartProducts(name) {
+    async getWalmartProducts(query) {
+        await sleep(7000);
         return {
             seller: "Walmart",
             products: [
@@ -19,7 +22,8 @@ class TestScraper {
         }
     }
 
-    getAmazonProducts(name) {
+    async getAmazonProducts(query) {
+        await sleep(3000);
         return {
             seller: "Amazon",
             products: [
@@ -39,7 +43,8 @@ class TestScraper {
         }
     }
 
-    getEbayProducts(name) {
+    async getEbayProducts(query) {
+        await sleep(5000);
         return {
             seller: "Ebay",
             products: [
@@ -59,7 +64,8 @@ class TestScraper {
         }
     }
 
-    getTargetProducts(name) {
+    async getTargetProducts(query) {
+        await sleep(6000);
         return {
             seller: "Target",
             products: [

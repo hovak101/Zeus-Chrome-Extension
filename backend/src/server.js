@@ -1,28 +1,50 @@
 import express from 'express';
-import { TestParser } from './TestParser.js';
-import { TestScraper } from './TestScraper.js';
+import { Parser } from './Parser.js';
+import { Scraper } from './Scraper.js';
+import { getQuery } from './Queryer.js';
+import { withTimeout } from './utils/withTimeout.js'; 
+
 const app = express();
 const PORT = process.env.PORT || 3000;
-const parser = new TestParser();
-const scraper = new TestScraper();
+const parser = new Parser();
+const scraper = new Scraper();
+await scraper.init();
+
+const PROD_TIMEOUT = 10000;
 
 app.use(express.json());
 
-async function addProducts(name, exclude) {
-  console.log("in addProducts function");
+async function addProducts(query, exclude) {
   const promises = [];
 
   if (exclude !== "Walmart") {
-    promises.push(scraper.getWalmartProducts(name));
+    try {
+      promises.push(withTimeout(scraper.getWalmartProducts(query), PROD_TIMEOUT));
+    } catch(err) {
+      console.log("getWalmartProducts: ", err);
+    }
   }
   if (exclude !== "Amazon") {
-    promises.push(scraper.getAmazonProducts(name));
+    try {
+      promises.push(withTimeout(scraper.getAmazonProducts(query), PROD_TIMEOUT));
+    } catch (err) {
+      console.log("getAmazonProducts: ", err);
+    }
   }
   if (exclude !== "Ebay") {
-    promises.push(scraper.getEbayProducts(name));
+    try {
+      promises.push(withTimeout(scraper.getEbayProducts(query), PROD_TIMEOUT));
+    } catch (err) {
+      console.log("getEbayProducts: ", err);
+    }
   }
   if (exclude !== "Target") {
-    promises.push(scraper.getTargetProducts(name));
+    try {
+      promises.push(withTimeout(scraper.getTargetProducts(query), PROD_TIMEOUT));
+    }
+    catch (err) {
+      console.log("getTargetProducts: ", err);
+    }
   }
 
   const results = await Promise.allSettled(promises);
@@ -35,19 +57,16 @@ async function addProducts(name, exclude) {
     }
   });
 
-  console.log(products);
   return products;
 }
 
 // timeout after 20 seconds
 app.post('/scrape', async (req, res) => {
-  console.log("in post function");
   try {
     const name = req.body.name;
     const exclude = req.body.exclude;
-
-    console.log("in post function 2");
-    const products = await addProducts(name, exclude);
+    const query = await getQuery({ name: name });
+    const products = await withTimeout(addProducts(query, exclude), 20000);
     res.json({
       productInfo: products
     });
