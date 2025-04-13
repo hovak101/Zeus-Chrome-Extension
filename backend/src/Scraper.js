@@ -93,10 +93,10 @@ class Scraper {
                 }
             
                 return {
-                url,
-                price: price ? parseFloat(price) : null,
-                shippingCost: parseFloat(shipping),
-                freeReturns,
+                    url,
+                    price: price ? parseFloat(price) : null,
+                    shippingCost: parseFloat(shipping),
+                    freeReturns,
                 };
             });
         });

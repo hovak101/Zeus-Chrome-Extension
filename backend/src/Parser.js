@@ -20,9 +20,16 @@ class Parser {
     }
 
     getBestEbayProduct(products) {
-      const product = this.getFirstProduct(products);
-      product.seller = "Ebay";
-      return product;
+      let product; 
+      
+      for(let i = 3; i >= 0; i--) {
+        if (products.length >= i) {
+          product = products[i];
+          product.seller = "Ebay";
+          return product;
+        }
+      }
+      return null; 
     }
   
     getBestTargetProduct(products) {
