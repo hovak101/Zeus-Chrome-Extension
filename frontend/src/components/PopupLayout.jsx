@@ -12,7 +12,7 @@ function PopupLayout(props) {
           </div>  
           <div className="flex flex-row gap-x-2.5 items-center content-center place-content-center">
             <SettingsButton isDark={props.isDark} setIsDark={props.setIsDark}/>
-            <Flag className="w-7 h-7 
+            {/* <Flag className="w-7 h-7 
                             cursor-pointer
                             text-black
                             hover:text-yellow-500
@@ -21,7 +21,7 @@ function PopupLayout(props) {
                             duration-100
                             ease-in-out
                             place-content-center
-                            dark:text-gray-100"/>
+                            dark:text-gray-100"/> */}
           </div>
         </div>
         <div>

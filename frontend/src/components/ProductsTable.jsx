@@ -13,6 +13,7 @@ import amazonIcon from '../assets/amazon.png';
 import ebayIcon from '../assets/ebay.png';
 import walmartIcon from '../assets/walmart.png';
 import targetIcon from '../assets/target.png';
+import bestBuyIcon from '../assets/best-buy.svg';
 
 function getSellerLogo(seller) {
   switch (seller.toLowerCase()) {
@@ -22,6 +23,8 @@ function getSellerLogo(seller) {
       return ebayIcon;
     case "walmart":
       return walmartIcon;
+    case "best buy":
+      return bestBuyIcon;
     default:
       return targetIcon;
   }
@@ -43,6 +46,7 @@ function ProductsTable(props) {
             <TableCell className="flex flex-row font-medium gap-x-2">
               <img
                 src={getSellerLogo(product.seller)}
+                className="w-6 h-6 object-contain"
               />
               {product.seller}
               </TableCell>
