@@ -17,20 +17,23 @@ app.use(express.json());
 async function addProducts(query, exclude) {
   const promises = [];
 
-  if (exclude !== "Walmart") {
-    try {
-      promises.push(withTimeout(scraper.getWalmartProducts(query), PROD_TIMEOUT));
-    } catch(err) {
-      console.log("getWalmartProducts: ", err);
-    }
-  }
-  if (exclude !== "Amazon") {
-    try {
-      promises.push(withTimeout(scraper.getAmazonProducts(query), PROD_TIMEOUT));
-    } catch (err) {
-      console.log("getAmazonProducts: ", err);
-    }
-  }
+  // walmart scraping does not work due to bot detection
+  // if (exclude !== "Walmart") {
+  //   try {
+  //     promises.push(withTimeout(scraper.getWalmartProducts(query), PROD_TIMEOUT));
+  //   } catch(err) {
+  //     console.log("getWalmartProducts: ", err);
+  //   }
+  // }
+
+  // extension currently only pulls data from amazon
+  // if (exclude !== "Amazon") {
+  //   try {
+  //     promises.push(withTimeout(scraper.getAmazonProducts(query), PROD_TIMEOUT));
+  //   } catch (err) {
+  //     console.log("getAmazonProducts: ", err);
+  //   }
+  // }
   if (exclude !== "Ebay") {
     try {
       promises.push(withTimeout(scraper.getEbayProducts(query), PROD_TIMEOUT));
@@ -53,7 +56,9 @@ async function addProducts(query, exclude) {
   results.forEach((result) => {
     if (result.status === "fulfilled" && result.value) {
       const product = parser.parseProduct(result.value);
-      products.push(product);
+      if (product) {
+        products.push(product);
+      }
     }
   });
 

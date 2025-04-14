@@ -22,8 +22,8 @@ class Parser {
     getBestEbayProduct(products) {
       let product; 
       
-      for(let i = 3; i > 0; i--) {
-        if (products.length >= i) {
+      for(let i = 3; i >= 0; i--) {
+        if (products.length > i) {
           product = products[i];
           product.seller = "Ebay";
           return product;
@@ -33,9 +33,17 @@ class Parser {
     }
   
     getBestTargetProduct(products) {
-      const product = this.getFirstProduct(products);
-      product.seller = "Target";
-      return product;
+      for(let i = 0; i < products.length; i++) {
+        if (!products[i].isSponsored) {
+          const product = products[i];
+          product.seller = "Target";
+          product.shippingCost = 0.00;
+          product.freeReturns = true;
+          
+          return product;
+        }
+      }
+      return null; 
     }
     
     getBestAmazonProduct(products) {
