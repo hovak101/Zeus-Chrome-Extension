@@ -7,8 +7,7 @@ class Scraper {
         
         // Base options that work well locally
         const options = {
-            headless: false,
-            sloMo: 250,
+            headless: "new",
         };
         
         // Add extra args only in production environment
@@ -168,7 +167,9 @@ class Scraper {
         }
     }
 
-    async getBestBuyProducts(query)
+    async getBestBuyProducts(query) {
+
+    }
 
 }
 
