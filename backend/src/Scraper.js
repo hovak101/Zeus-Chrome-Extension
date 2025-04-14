@@ -150,8 +150,8 @@ class Scraper {
           const data = await response.json();
           let products = data.data.search.products;
           products = products.map((product) => {
-            const price = parseFloat(products[0].price.current_retail);
-            const url = products[0].item.enrichment.buy_url;
+            const price = parseFloat(product.price.current_retail);
+            const url = product.item.enrichment.buy_url;
 
             return {
                 url: url,
@@ -165,10 +165,6 @@ class Scraper {
             seller: "Target",
             products: products,
         }
-    }
-
-    async getBestBuyProducts(query) {
-
     }
 
 }
