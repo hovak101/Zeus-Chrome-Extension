@@ -49,6 +49,14 @@ async function addProducts(query, exclude) {
       console.log("getTargetProducts: ", err);
     }
   }
+  if (exclude !== "BestBuy") {
+    try {
+      promises.push(withTimeout(scraper.getBestBuyProducts(query), PROD_TIMEOUT));
+    }
+    catch (err) {
+      console.log("getBestBuyProducts: ", err);
+    }
+  }
 
   const results = await Promise.allSettled(promises);
 

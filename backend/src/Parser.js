@@ -8,6 +8,10 @@ class Parser {
             return this.getBestTargetProduct(sellerProducts.products);
         } else if (sellerProducts.seller === "Amazon") {
             return this.getBestAmazonProduct(sellerProducts.products);
+        } else if (sellerProducts.seller === "Best Buy"){
+            return this.getBestBestBuyProduct(sellerProducts.products);
+        } else {
+          return null; 
         }
     }
 
@@ -17,6 +21,15 @@ class Parser {
         } else {
             return null;
         }
+    }
+
+    getFirstNonSponsored(products) {
+      for(let i = 0; i < products.length; i++) {
+        if (!products[i].isSponsored) {
+          return products[i];
+        }
+      }
+      return null; 
     }
 
     getBestEbayProduct(products) {
@@ -33,15 +46,13 @@ class Parser {
     }
   
     getBestTargetProduct(products) {
-      for(let i = 0; i < products.length; i++) {
-        if (!products[i].isSponsored) {
-          const product = products[i];
-          product.seller = "Target";
-          product.shippingCost = 0.00;
-          product.freeReturns = true;
-          
-          return product;
-        }
+      let product = this.getFirstNonSponsored(products);
+
+      if (product) {
+        product.seller = "Target";
+        product.freeReturns = true;
+        product.shippingCost = 0.00;
+        return product; 
       }
       return null; 
     }
@@ -56,6 +67,18 @@ class Parser {
       const product = this.getFirstProduct(products);
       product.seller = "Walmart";
       return product;
+    }
+
+    getBestBestBuyProduct(products) {
+      let product = this.getFirstNonSponsored(products);
+      
+      if (product) {
+        product.seller = "Best Buy";
+        product.freeReturns = true;
+        product.shippingCost = 0.00;
+        return product; 
+      }
+      return null; 
     }
   }
   

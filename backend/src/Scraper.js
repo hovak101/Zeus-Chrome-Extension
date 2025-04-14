@@ -16,7 +16,8 @@ class Scraper {
                 '--no-sandbox',
                 '--disable-setuid-sandbox',
                 '--disable-dev-shm-usage',
-                '--no-zygote'
+                '--no-zygote',
+                '--disable-blink-features=AutomationControlled'
             ];
         }
         
@@ -64,7 +65,6 @@ class Scraper {
     }
 
     async getEbayProducts(query) {
-        console.log(query);
         const page = await this.browser.newPage();
         const url = `https://www.ebay.com/sch/i.html?_nkw=${encodeURIComponent(query)}`;
         await page.goto(url);
@@ -161,12 +161,54 @@ class Scraper {
             }
           });
 
+        await page.close();
         return {
             seller: "Target",
             products: products,
         }
     }
 
+    async getBestBuyProducts(query) {
+        try {
+        const page = await this.browser.newPage();
+        await page.setUserAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36");
+        const url = `https://www.bestbuy.com/site/searchpage.jsp?st=${encodeURIComponent(query)}`;
+        await page.goto(url);
+
+        await page.waitForSelector('#main-results', { timeout: 10000 });
+
+        const main = await page.$('#main-results');
+        if (!main) {
+            throw new Error("Main content (#main-results) not found");
+        }
+
+        await page.waitForSelector('ol.sku-item-list.grid-view');
+        const products = await page.$$eval('ol.sku-item-list.grid-view > li', items => {
+            return items.map(item => {
+                const isSponsored = !!item.querySelector('.is-sponsored');
+                let url = item.querySelector('h4.sku-title > a')?.getAttribute('href') || null;
+                url = `https://www.bestbuy.com${url}`
+                const priceText = item.querySelector('[data-testid="customer-price"] span')?.textContent.trim() || '';
+                const price = +(parseFloat(priceText.replace(/[^0-9.]/g, '')) || 0).toFixed(2);
+                
+                return {
+                    isSponsored: isSponsored,
+                    url: url,
+                    price: price,
+                }
+            });
+        });
+
+        await page.close();
+        return {
+            seller: "Best Buy",
+            products: products,
+        }
+        } catch (err) {
+            console.log("BB error: ", err);
+        }
+        
+    }
 }
 
 export { Scraper };
